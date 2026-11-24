@@ -1,0 +1,46 @@
+[Unit]
+Description=Detector de fuerza bruta SSH (vigia)
+Documentation=https://github.com/mario98721/vigia-ssh
+After=network-online.target ssh.service sshd.service
+Wants=network-online.target
+# Si falla 10 veces en 5 minutos (p. ej. sin CANAL), se para en vez de reiniciar sin fin.
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/vigia_ssh.py -C -B -s
+Restart=on-failure
+RestartSec=5
+UMask=0077
+
+# Endurecimiento. Corre como root para leer el journal sin grupos extra, pero solo
+# conserva CAP_NET_ADMIN (nftables) y solo puede escribir en sus dos directorios.
+StateDirectory=vigia
+StateDirectoryMode=0700
+LogsDirectory=vigia
+LogsDirectoryMode=0750
+CapabilityBoundingSet=CAP_NET_ADMIN
+NoNewPrivileges=yes
+ProtectSystem=strict
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+
+[Install]
+WantedBy=multi-user.target

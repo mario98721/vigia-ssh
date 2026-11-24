@@ -1,0 +1,29 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install --upgrade pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile bin/vigia_ssh.py bin/honeypot.py tests/test_vigia.py
+      - run: python -m unittest discover -s tests -v
+      - run: sudo apt-get update -qq && sudo apt-get install -y shellcheck
+      - run: shellcheck --severity=warning bin/*.sh install.sh uninstall.sh tools/*.sh
+      - run: for f in bin/*.sh install.sh uninstall.sh tools/*.sh; do bash -n "$f"; done

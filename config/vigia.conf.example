@@ -1,0 +1,30 @@
+# Copiar a /etc/vigia/vigia.conf (chmod 640 root:root)
+# La línea de órdenes sobrescribe estos valores.
+
+# Fallos por IP antes de alertar. Bájalo en aulas ruidosas.
+UMBRAL=5
+
+# Minutos que se miran hacia atrás.
+VENTANA_MIN=5
+
+# Segundos de silencio por IP tras alertar (600 = 10 min).
+ENFRIAMIENTO=600
+
+# Minutos entre resúmenes periódicos (el enunciado pide 5). 0 lo desactiva.
+RESUMEN_MIN=5
+
+# Minutos hasta que caduca un bloqueo. 0 = nunca caduca.
+DESBLOQUEO_MIN=30
+
+# Severidad mínima para bloquear: media | alta | critica.
+BLOQUEO_MIN_SEV=alta
+
+# Segundos entre análisis en modo continuo.
+THROTTLE=10
+
+# Unidades de systemd de las que se leen los intentos, separadas por espacios.
+# ssh en Debian/Ubuntu/Kali, sshd en RHEL/Fedora/Arch. Las dos no estorban.
+UNIDADES=ssh sshd
+
+# URL del webhook del canal. Obligatorio salvo con -n.
+CANAL=
